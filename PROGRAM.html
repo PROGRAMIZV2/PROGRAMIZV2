@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programiz Clone</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #1e1e24; color: #d4d4d4; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background-color: #1e1e24; border-bottom: 1px solid #333; }
+        .logo-area h1 { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+        .logo-area p { font-size: 14px; color: #a0a0a0; margin-top: 2px; }
+        .pro-btn { background: transparent; color: #fff; border: 1px solid #555; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        .sidebar { width: 64px; background-color: #25252b; border-right: 1px solid #333; display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 12px; transition: width 0.3s ease, padding 0.3s ease; overflow-y: auto; }
+        .sidebar::-webkit-scrollbar { display: none; }
+        .sidebar.hidden { width: 0; padding: 16px 0; border-right: none; }
+        
+        .icon-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; border: 1px solid #444; flex-shrink: 0; transition: all 0.2s; }
+        .icon-btn:hover { background-color: #333; }
+        .icon-btn.active { background-color: #3776AB; border-color: #3776AB; }
+        .icon-btn.active svg { fill: white; width: 24px; height: 24px; }
+        .icon-btn svg { width: 22px; height: 22px; fill: #888; }
+        .icon-btn span { font-weight: bold; font-size: 18px; color: #888; }
+        
+        .workspace { display: flex; flex: 1; }
+        .editor-pane { width: 50%; display: flex; flex-direction: column; background-color: #1e1e24; border-right: 2px solid #111; position: relative; }
+        
+        .toolbar { display: flex; align-items: center; justify-content: space-between; background-color: #25252b; border-bottom: 1px solid #333; height: 48px; padding-right: 8px; }
+        .tab { height: 100%; display: flex; align-items: center; padding: 0 16px; background-color: #1e1e24; color: #fff; font-size: 14px; border-right: 1px solid #333; gap: 8px; }
+        .menu-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 18px; padding-right: 8px; }
+        .actions { display: flex; gap: 8px; }
+        .btn-visualize { background: transparent; color: #fff; border: 1px solid #555; padding: 6px 16px; border-radius: 4px; font-size: 14px; cursor: pointer; }
+        .btn-run { background-color: #2563eb; color: #fff; border: none; padding: 6px 16px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-run:disabled { opacity: 0.5; }
+        
+        .editor-area { flex: 1; padding: 16px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; line-height: 1.6; overflow-y: auto; outline: none; color: #d4d4d4; white-space: pre-wrap; caret-color: #fff; }
+        
+        .divider { width: 12px; background-color: #1e1e24; border-left: 1px solid #333; border-right: 1px solid #333; display: flex; align-items: center; justify-content: center; cursor: col-resize; }
+        .divider-handle { width: 4px; height: 32px; background-color: #444; border-radius: 2px; }
+        
+        .output-pane { width: 50%; display: flex; flex-direction: column; background-color: #1e1e24; }
+        .output-toolbar { display: flex; align-items: center; justify-content: space-between; background-color: #25252b; border-bottom: 1px solid #333; height: 48px; padding: 0 16px; }
+        .output-toolbar span { color: #fff; font-size: 14px; font-weight: 500; }
+        .terminal { flex: 1; padding: 16px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; color: #ccc; white-space: pre-wrap; overflow-y: auto; background-color: #1e1e24; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1><span style="color:#fff">P</span>rogramiz</h1>
+            <p>Python Online Compiler</p>
+        </div>
+        <button class="pro-btn">Programiz PRO &rsaquo;</button>
+    </header>
+
+    <div class="main-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="icon-btn active">
+                <svg viewBox="0 0 24 24"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.03v-2.867s-.109-3.402 3.35-3.402h5.765s3.242.053 3.242-3.132V3.183S18.265 0 11.914 0zM8.693 1.881a1.03 1.03 0 1 1 0 2.06 1.03 1.03 0 0 1 0-2.06z"/><path d="M12.086 24c6.093 0 5.714-2.656 5.714-2.656l-.008-2.752h-5.814v-.826h8.12S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.03v2.867s.109 3.402-3.35 3.402H9.45s-3.242-.053-3.242 3.132v5.345S5.735 24 12.086 24zm3.221-1.881a1.03 1.03 0 1 1 0-2.06 1.03 1.03 0 0 1 0 2.06z"/></svg>
+            </div>
+            <div class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10 10 10 0 0 0-10-10zm0 18.2A8.2 8.2 0 1 1 20.2 12 8.2 8.2 0 0 1 12 20.2zm5.4-5.5l-2.5-3.9a3.6 3.6 0 0 0-1.2-6.8H8.5v10.7h1.8v-4.2h2.2l2.6 4.2h2.3zM10.3 6.9h2.5a1.8 1.8 0 0 1 0 3.6h-2.5V6.9z"/></svg>
+            </div>
+            <div class="icon-btn"><span style="font-family: sans-serif; font-weight: bold; font-size: 20px;">C</span></div>
+            <div class="icon-btn"><span style="font-family: sans-serif; font-weight: bold; font-size: 16px;">C++</span></div>
+            <div class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1v-2h1a2 2 0 0 0 0-4h-1V8zm-2 10H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2zm-6-6H6v-2h4v2zm2 0h-2v-2h2v2zm2 0h-2v-2h2v2zm4-6a3 3 0 0 1-3-3V2h2v1a1 1 0 0 0 1 1h2a3 3 0 0 1 0 6h-2z"/></svg>
+            </div>
+            <div class="icon-btn"><span style="font-family: sans-serif; font-weight: bold; font-size: 16px;">C#</span></div>
+            <div class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm14.5 15.5c.5.8 1.2 1.5 2.5 1.5 1.5 0 2.5-1 2.5-2.5 0-1.5-1-2-2.5-2.5-1-.5-1.5-.8-1.5-1.5 0-.5.5-1 1.5-1 .8 0 1.2.3 1.5 1l1-1c-.8-1-1.5-1.5-2.5-1.5-1.5 0-2.5 1-2.5 2.5 0 1.5 1 2 2.5 2.5 1 .5 1.5.8 1.5 1.5 0 .8-.5 1-1.5 1-.8 0-1.2-.3-1.5-1l-1 1zm-6 0c.5.8 1.2 1.5 2.5 1.5 1.5 0 2.5-1 2.5-2.5v-6h-1.5v6c0 .8-.5 1-1 1-.8 0-1.2-.3-1.5-1l-1 1z"/></svg>
+            </div>
+        </aside>
+
+        <div class="workspace">
+            <div class="editor-pane">
+                <div class="toolbar">
+                    <div class="tab">
+                        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+                        main.py
+                    </div>
+                    <div class="actions">
+                        <button class="btn-visualize" onclick="runCode()">Visualize</button>
+                        <button class="btn-run" id="runBtn" onclick="runCode()">Run ▶</button>
+                    </div>
+                </div>
+                
+                <!-- THE EXACT STARTUP TEXT FROM PROGRAMIZ -->
+                <div class="editor-area" id="codeEditor" contenteditable="true" spellcheck="false"># Online Python compiler (interpreter)
+# Write and run Python online using this editor.
+
+print("Also try Visualize to understand code.")</div>
+            </div>
+
+            <div class="divider"><div class="divider-handle"></div></div>
+
+            <div class="output-pane">
+                <div class="output-toolbar"><span>Output</span></div>
+                <div class="terminal" id="outputTerminal">Loading Python engine...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const programs = {
+            1: { name: "Program to find remainder", code: `num1 = float(input("Enter first number: "))\nnum2 = float(input("Enter second number: "))\nremainder = num1 % num2\nprint("The Remainder is:", remainder)` },
+            2: { name: "Program to Find the Square of a Number", code: `num = int(input("Enter a number: "))\nsquare = num ** 2\nprint("Square of", num, "is", square)` },
+            3: { name: "Program to Swap Two Numbers", code: `a = int(input("Enter first number: "))\nb = int(input("Enter second number: "))\na, b = b, a\nprint("After swapping:")\nprint("First number:", a)\nprint("Second number:", b)` },
+            4: { name: "Program to Check Even or Odd", code: `num = int(input("Enter a number: "))\nif num % 2 == 0:\n    print(num, "is Even")\nelse:\n    print(num, "is Odd")` },
+            5: { name: "Program to Calculate Area of a Circle", code: `radius = float(input("Enter the radius: "))\narea = 3.14159 * radius * radius\nprint("Area of the circle is:", area)` },
+            6: { name: "Program to Find the Largest of Two Numbers", code: `a = int(input("Enter first number: "))\nb = int(input("Enter second number: "))\nif a > b:\n    print(a, "is greater")\nelse:\n    print(b, "is greater")` },
+            7: { name: "Program to Print First 10 Natural Numbers", code: `for i in range(1, 11):\n    print(i)` },
+            8: { name: "Program to Calculate Sum of First N Natural Numbers", code: `n = int(input("Enter N: "))\ntotal = 0\nfor i in range(1, n+1):\n    total += i\nprint("Sum of first", n, "natural numbers is:", total)` },
+            9: { name: "Program to Generate Multiplication Table", code: `num = int(input("Enter a number: "))\nfor i in range(1, 11):\n    print(num, "x", i, "=", num * i)` },
+            10: { name: "Program to find the largest of three numbers", code: `a = float(input("Enter first number: "))\nb = float(input("Enter second number: "))\nc = float(input("Enter third number: "))\nif a >= b and a >= c:\n    largest = a\nelif b >= a and b >= c:\n    largest = b\nelse:\n    largest = c\nprint("The largest number is:", largest)` },
+            11: { name: "Write a menu-based program to calculate the area or perimeter of a rectangle", code: `print("--- Rectangle Calculator ---")\nprint("1. Calculate Area")\nprint("2. Calculate Perimeter")\nchoice = int(input("Enter your choice (1 or 2): "))\nlength = float(input("Enter length of rectangle: "))\nwidth = float(input("Enter width of rectangle: "))\nif choice == 1:\n    area = length * width\n    print("Area of rectangle =", area)\nelif choice == 2:\n    perimeter = 2 * (length + width)\n    print("Perimeter of rectangle =", perimeter)\nelse:\n    print("Invalid choice! Please enter 1 or 2.")` },
+            12: { name: "Write a program to check for negative, positive or zero number", code: `num = float(input("Enter a number: "))\nif num > 0:\n    print(num, "is Positive")\nelif num < 0:\n    print(num, "is Negative")\nelse:\n    print("The number is Zero")` }
+        };
+
+        const editor = document.getElementById('codeEditor');
+        const terminal = document.getElementById('outputTerminal');
+        let pyodide;
+
+        async function initPython() {
+            try {
+                pyodide = await loadPyodide();
+                terminal.textContent = "Ready to run Python.";
+            } catch (e) {
+                terminal.textContent = "Engine failed to load. Check connection.";
+            }
+        }
+        initPython();
+
+        editor.addEventListener('keyup', function(e) {
+            const text = editor.innerText.trim();
+            if (text === '/PROGRAMS') {
+                let list = "--- LIST OF PROGRAMS ---\n\n";
+                for (const [num, data] of Object.entries(programs)) {
+                    list += `${num}. ${data.name}\n`;
+                }
+                list += "\n(Type /program [number] to load)";
+                editor.innerText = list;
+                placeCaretAtEnd(editor);
+            }
+            const match = text.match(/^\/program\s+(\d+)$/i);
+            if (match) {
+                const progNum = match[1];
+                if (programs[progNum]) {
+                    editor.innerText = programs[progNum].code;
+                    terminal.textContent = "";
+                } else {
+                    editor.innerText = `# Error: Program ${progNum} not found.`;
+                }
+                placeCaretAtEnd(editor);
+            }
+        });
+
+        function placeCaretAtEnd(el) {
+            el.focus();
+            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        }
+
+        async function runCode() {
+            if (!pyodide) {
+                terminal.textContent = "Python is still loading. Please wait...";
+                return;
+            }
+
+            const runBtn = document.getElementById('runBtn');
+            runBtn.disabled = true;
+            terminal.textContent = "";
+
+            let code = editor.innerText;
+            code = code.replace(/\binput\s*\(/g, '__prompt(');
+
+            try {
+                pyodide.globals.set("js_prompt", function(text) {
+                    return prompt(text);
+                });
+                pyodide.globals.set("js_print", function(text) {
+                    terminal.textContent += text + "\n";
+                });
+                
+                await pyodide.runPythonAsync(`
+import sys
+import builtins
+
+def custom_print(*args, sep=' ', end='\\n'):
+    js_print(sep.join(map(str, args)))
+
+builtins.print = custom_print
+
+def __prompt(text):
+    return js_prompt(text)
+                `);
+
+                await pyodide.runPythonAsync(code);
+                
+            } catch (error) {
+                terminal.textContent += "\nError:\n" + error.message;
+            } finally {
+                runBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
